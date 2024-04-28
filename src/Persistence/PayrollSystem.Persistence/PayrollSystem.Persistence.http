@@ -1,0 +1,6 @@
+@PayrollSystem.Persistence_HostAddress = http://localhost:5279
+
+GET {{PayrollSystem.Persistence_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
