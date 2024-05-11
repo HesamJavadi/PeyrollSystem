@@ -15,9 +15,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{C9B624B1-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicationService", "ApplicationService", "{9AB76001-10D0-42E9-AE97-0523EBFDFFDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollSystem.Persistence", "src\Persistence\PayrollSystem.Persistence\PayrollSystem.Persistence.csproj", "{9BAFE90E-253F-4B5B-958B-3351B33B07CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Persistence", "src\Persistence\PayrollSystem.Persistence\PayrollSystem.Persistence.csproj", "{9BAFE90E-253F-4B5B-958B-3351B33B07CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollSystem.Domain.Core", "src\Domain\Core\PayrollSystem.Domain.Core\PayrollSystem.Domain.Core.csproj", "{C01F57E2-72DA-4877-9071-9A7E07E63B94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Domain.Core", "src\Domain\Core\PayrollSystem.Domain.Core\PayrollSystem.Domain.Core.csproj", "{C01F57E2-72DA-4877-9071-9A7E07E63B94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Infrastructure.SQL", "src\Infrastructure\PayrollSystem.Infrastructure.SQL\PayrollSystem.Infrastructure.SQL.csproj", "{58321DD2-41F5-47E1-B0D2-99B6B19D0F2A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{45BE9B52-DB32-447E-BEB8-D417CB9FB734}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{26F7E153-B215-4963-9AD6-85BCBB7E00F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Infrastructure.Service", "src\Infrastructure\Service\PayrollSystem.Infrastructure.Service\PayrollSystem.Infrastructure.Service.csproj", "{3D326B9C-B318-4B24-B22B-A1018EAE22E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{B75304CF-4759-45B4-BF30-DF7A66A8F424}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Domain.Contracts", "src\Domain\Contracts\PayrollSystem.Domain.Contracts\PayrollSystem.Domain.Contracts.csproj", "{5918F6DA-0083-4471-A8CA-8B05B9E446E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Domain.ApplicationService", "src\Domain\ApplicationService\PayrollSystem.Domain.ApplicationService\PayrollSystem.Domain.ApplicationService.csproj", "{9D8632B7-C8FC-418E-A1F8-97DBB9EB9D9B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Domain.LOC", "src\Domain\ApplicationService\PayrollSystem.Domain.LOC\PayrollSystem.Domain.LOC.csproj", "{2E496B91-5787-4639-97A2-879EF814963F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollSystem.Infrastructure.Dapper", "src\Infrastructure\Data\PayrollSystem.Infrastructure.StoreProduceDapper\PayrollSystem.Infrastructure.Dapper.csproj", "{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +51,30 @@ Global
 		{C01F57E2-72DA-4877-9071-9A7E07E63B94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C01F57E2-72DA-4877-9071-9A7E07E63B94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C01F57E2-72DA-4877-9071-9A7E07E63B94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58321DD2-41F5-47E1-B0D2-99B6B19D0F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58321DD2-41F5-47E1-B0D2-99B6B19D0F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58321DD2-41F5-47E1-B0D2-99B6B19D0F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58321DD2-41F5-47E1-B0D2-99B6B19D0F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D326B9C-B318-4B24-B22B-A1018EAE22E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D326B9C-B318-4B24-B22B-A1018EAE22E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D326B9C-B318-4B24-B22B-A1018EAE22E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D326B9C-B318-4B24-B22B-A1018EAE22E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5918F6DA-0083-4471-A8CA-8B05B9E446E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5918F6DA-0083-4471-A8CA-8B05B9E446E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5918F6DA-0083-4471-A8CA-8B05B9E446E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5918F6DA-0083-4471-A8CA-8B05B9E446E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8632B7-C8FC-418E-A1F8-97DBB9EB9D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8632B7-C8FC-418E-A1F8-97DBB9EB9D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8632B7-C8FC-418E-A1F8-97DBB9EB9D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8632B7-C8FC-418E-A1F8-97DBB9EB9D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E496B91-5787-4639-97A2-879EF814963F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E496B91-5787-4639-97A2-879EF814963F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E496B91-5787-4639-97A2-879EF814963F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E496B91-5787-4639-97A2-879EF814963F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +87,15 @@ Global
 		{9AB76001-10D0-42E9-AE97-0523EBFDFFDF} = {06B1E940-4811-407B-898D-B325E61B229E}
 		{9BAFE90E-253F-4B5B-958B-3351B33B07CC} = {4DC801DF-16DC-47C8-9975-C99954DFD494}
 		{C01F57E2-72DA-4877-9071-9A7E07E63B94} = {C9B624B1-0FAF-44A2-876B-5B1CCCDA170B}
+		{58321DD2-41F5-47E1-B0D2-99B6B19D0F2A} = {45BE9B52-DB32-447E-BEB8-D417CB9FB734}
+		{45BE9B52-DB32-447E-BEB8-D417CB9FB734} = {10E6874F-4C13-4943-8D7B-AAC99232E8EE}
+		{26F7E153-B215-4963-9AD6-85BCBB7E00F1} = {10E6874F-4C13-4943-8D7B-AAC99232E8EE}
+		{3D326B9C-B318-4B24-B22B-A1018EAE22E6} = {26F7E153-B215-4963-9AD6-85BCBB7E00F1}
+		{B75304CF-4759-45B4-BF30-DF7A66A8F424} = {06B1E940-4811-407B-898D-B325E61B229E}
+		{5918F6DA-0083-4471-A8CA-8B05B9E446E2} = {B75304CF-4759-45B4-BF30-DF7A66A8F424}
+		{9D8632B7-C8FC-418E-A1F8-97DBB9EB9D9B} = {9AB76001-10D0-42E9-AE97-0523EBFDFFDF}
+		{2E496B91-5787-4639-97A2-879EF814963F} = {9AB76001-10D0-42E9-AE97-0523EBFDFFDF}
+		{B6CBABCF-25D6-4323-85AB-544AF1C34CD6} = {45BE9B52-DB32-447E-BEB8-D417CB9FB734}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FE072AB-9A1F-45D4-ADB8-9E87C6A7B287}
