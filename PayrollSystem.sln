@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Domain.Applic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Domain.LOC", "src\Domain\ApplicationService\PayrollSystem.Domain.LOC\PayrollSystem.Domain.LOC.csproj", "{2E496B91-5787-4639-97A2-879EF814963F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollSystem.Infrastructure.Dapper", "src\Infrastructure\Data\PayrollSystem.Infrastructure.StoreProduceDapper\PayrollSystem.Infrastructure.Dapper.csproj", "{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Infrastructure.Dapper", "src\Infrastructure\Data\PayrollSystem.Infrastructure.StoreProduceDapper\PayrollSystem.Infrastructure.Dapper.csproj", "{B6CBABCF-25D6-4323-85AB-544AF1C34CD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

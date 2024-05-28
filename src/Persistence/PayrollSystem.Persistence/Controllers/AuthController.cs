@@ -29,9 +29,9 @@ namespace PayrollSystem.Persistence.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("login")]
+        [HttpPost("signin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        public async Task<IActionResult> Singin([FromBody] LoginDto model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
 
@@ -42,7 +42,7 @@ namespace PayrollSystem.Persistence.Controllers
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.NameIdentifier, user.Id)
                 };
-
+                var expireDate = DateTime.UtcNow.AddMinutes(30);
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_hereyour_secret_key_here"));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -50,10 +50,10 @@ namespace PayrollSystem.Persistence.Controllers
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(30),
+                    expires: expireDate,
                     signingCredentials: creds);
 
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token),date = expireDate });
             }
 
             return Unauthorized();
@@ -66,7 +66,7 @@ namespace PayrollSystem.Persistence.Controllers
             var user = new ApplicationUser
             {
                 UserName = model.Username,
-                pepCode = "123"
+                pepCode = "-"
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -77,6 +77,13 @@ namespace PayrollSystem.Persistence.Controllers
             }
 
             return BadRequest(result.Errors);
+        }
+
+        [HttpPost("signout")]
+        //[Authorize]
+        public async Task<IActionResult> SignOut()
+        {
+            return Ok();
         }
     }
 }

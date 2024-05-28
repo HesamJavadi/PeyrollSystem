@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Data.Personnel.PayStub;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStub;
+using PayrollSystem.Domain.Contracts.Request.PayStub;
 using PayrollSystem.Domain.Contracts.Service.Personnel.PayStub;
 using PayrollSystem.Domain.Core.Entities.personnel.PayStub;
 using System;
@@ -22,10 +24,10 @@ namespace PayrollSystem.Domain.ApplicationService.Personnel.PayStub
             _mapper = mapper;
         }
 
-        public PayStubDto GetPayStub()
+        public List<PayStubDto> GetPayStub(GetPayStubRequest getPayStub)
         {
-            var PayEntity = payStubRepository.GetPayStub();
-            return _mapper.Map<PayStubDto>(PayEntity);
+            var PayEntity = payStubRepository.GetPayStub(getPayStub.year,getPayStub.month);
+            return _mapper.Map<List<PayStubDto>>(PayEntity);
         }
     }
 }

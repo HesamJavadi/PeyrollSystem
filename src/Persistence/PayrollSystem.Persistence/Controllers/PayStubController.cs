@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PayrollSystem.Domain.Contracts.Dtos.Management.WebServiceManagement;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStub;
+using PayrollSystem.Domain.Contracts.Request.PayStub;
 using PayrollSystem.Domain.Contracts.Service.Personnel.PayStub;
 using PayrollSystem.Domain.Core.Entities.personnel.PayStub;
 
@@ -19,9 +20,9 @@ namespace PayrollSystem.Persistence.Controllers
         }
 
         [HttpGet]
-        public PayStubDto Get()
+        public List<PayStubDto> Get([FromQuery] GetPayStubRequest PayStub)
         {
-            return _service.GetPayStub();
+            return _service.GetPayStub(PayStub);
         }
 
     }

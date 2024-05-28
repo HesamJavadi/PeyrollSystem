@@ -1,4 +1,4 @@
-﻿namespace PayrollSystem.Domain.Core.ValueObjects;
+﻿namespace PayrollSystem.Domain.Core.ValueObjects.Bases;
 
 public abstract class BaseValueObject<TValueObject> : IEquatable<TValueObject>
         where TValueObject : BaseValueObject<TValueObject>

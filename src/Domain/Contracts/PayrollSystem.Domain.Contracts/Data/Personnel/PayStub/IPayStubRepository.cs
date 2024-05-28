@@ -9,6 +9,6 @@ namespace PayrollSystem.Domain.Contracts.Data.Personnel.PayStub
 {
     public interface IPayStubRepository
     {
-        PayStubModel GetPayStub();
+        List<PayStubModel> GetPayStub(int year,int month);
     }
 }

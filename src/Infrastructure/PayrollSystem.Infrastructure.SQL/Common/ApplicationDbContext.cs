@@ -14,10 +14,11 @@ using System.Reflection.Metadata;
 using PayrollSystem.Domain.Core.Entities.Management.WebServiceManagement;
 using PayrollSystem.Domain.Core.ValueObjects.Management.WebServiceManagement;
 using PayrollSystem.Domain.Contracts.Dtos.Auth;
+using Microsoft.AspNetCore.Identity;
 
 namespace PayrollSystem.Infrastructure.SQL.Common;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
 {
 
     protected IDbContextTransaction _transaction;

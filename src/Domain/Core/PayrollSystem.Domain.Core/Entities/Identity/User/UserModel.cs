@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PayrollSystem.Domain.Core.Entities.Identity.Users
+namespace PayrollSystem.Domain.Core.Entities.Identity.User
 {
     public class UserModel : IdentityUser
     {

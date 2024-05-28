@@ -8,6 +8,10 @@ namespace PayrollSystem.Domain.Core.Entities.personnel.PayStub
 {
     public class PayStubModel
     {
-        public int id { get; set; }
+        public int PersonelCode { get; set; }
+        public string FieldName { get; set; }
+        public string Caption { get; set; }
+        public string FieldValue { get; set; }
+        public int FieldType { get; set; }
     }
 }

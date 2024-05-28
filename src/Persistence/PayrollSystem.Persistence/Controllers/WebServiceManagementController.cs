@@ -27,13 +27,6 @@ namespace PayrollSystem.Persistence.Controllers
             return _service.GetAll();
         }
 
-        // GET api/<WebServiceManagementController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<WebServiceManagementController>
         [HttpPost]
         public void Post([FromBody] WebServiceManagementDto value)
@@ -41,16 +34,6 @@ namespace PayrollSystem.Persistence.Controllers
             _service.Create(value);
         }
 
-        // PUT api/<WebServiceManagementController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
-        // DELETE api/<WebServiceManagementController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

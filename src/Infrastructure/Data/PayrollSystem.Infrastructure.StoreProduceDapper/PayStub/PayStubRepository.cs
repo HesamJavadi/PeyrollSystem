@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Data.Personnel.PayStub;
+using PayrollSystem.Domain.Core.Entities.personnel.PayStatement;
 using PayrollSystem.Domain.Core.Entities.personnel.PayStub;
 using System;
 using System.Collections.Generic;
@@ -19,9 +21,15 @@ namespace PayrollSystem.Infrastructure.Dapper.PayStub
             _dbConnection = dbConnection;
         }
 
-        public PayStubModel? GetPayStub()
+        public List<PayStubModel>? GetPayStub(int year, int month)
         {
-            return _dbConnection.Query<PayStubModel>("select 1 as id").FirstOrDefault(); ;
+            var obj = new
+            {
+                salaryyear = year,
+                salarymonth = month, //11
+                personelcode = 13
+            };
+            return _dbConnection.Query<PayStubModel>("SVC_GetMonthlySalaryFicheInfo", obj, commandType: CommandType.StoredProcedure).ToList();
         }
 
     }

@@ -21,32 +21,38 @@ using PayrollSystem.Domain.Contracts.Data.Personnel.PayStub;
 using PayrollSystem.Infrastructure.Dapper.PayStub;
 using PayrollSystem.Domain.Contracts.Service.Personnel.PayStub;
 using PayrollSystem.Domain.ApplicationService.Personnel.PayStub;
+using PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement;
+using PayrollSystem.Infrastructure.Dapper.PayStatement;
+using PayrollSystem.Domain.ApplicationService.Personnel.PayStatement;
+using PayrollSystem.Domain.Contracts.Service.Personnel.PayStatement;
 
 namespace PayrollSystem.Domain.LOC;
 
-    public static class DependencyInjection
+public static class DependencyInjection
+{
+    public static void AddInfrastructure(this IServiceCollection services, string connectionString, string OutConnectionString)
     {
-        public static void AddInfrastructure(this IServiceCollection services, string connectionString)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
      .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
 
         services.AddTransient<IDbConnection>(provider => new SqlConnection(
-         connectionString));
+         OutConnectionString));
 
         services.AddSingleton<IMapper>(AutoMapperConfiguration.Configure());
 
 
         services.AddScoped<IWebServiceManagementService, WebServiceManagementService>();
-            services.AddScoped<IWebServiceManagementRepository, WebServiceManagementRepository>();
+        services.AddScoped<IWebServiceManagementRepository, WebServiceManagementRepository>();
 
 
-            services.AddScoped<IPayStubService, PayStubService>();
-            services.AddScoped<IPayStubRepository, PayStubRepository>();
-            // Register other repositories here
-        }
+        services.AddScoped<IPayStubService, PayStubService>();
+        services.AddScoped<IPayStubRepository, PayStubRepository>();
+
+        services.AddScoped<IPayStatementService, PayStatementService>();
+        services.AddScoped<IPayStatementRepository, PayStatementRepository>();
     }
+}

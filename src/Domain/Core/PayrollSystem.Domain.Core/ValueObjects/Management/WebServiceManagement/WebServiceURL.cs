@@ -1,4 +1,6 @@
-﻿namespace PayrollSystem.Domain.Core.ValueObjects.Management.WebServiceManagement;
+﻿using PayrollSystem.Domain.Core.ValueObjects.Bases;
+
+namespace PayrollSystem.Domain.Core.ValueObjects.Management.WebServiceManagement;
 public class WebServiceURL : BaseValueObject<WebServiceURL>
 {
     public string Value { get; private set; }
