@@ -14,6 +14,7 @@ namespace PayrollSystem.Persistence.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class PayStatementController : ControllerBase
     {
         private readonly IPayStatementService _service;

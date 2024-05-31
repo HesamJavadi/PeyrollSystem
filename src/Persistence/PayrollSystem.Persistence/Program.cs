@@ -38,6 +38,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var jwtIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer");
+var jwtAudience = builder.Configuration.GetValue<string>("Jwt:Audience");
+var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,9 +54,9 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "yourIssuer",
-        ValidAudience = "yourAudience",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yourSecretKey"))
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
 

@@ -10,6 +10,7 @@ namespace PayrollSystem.Persistence.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WebServiceManagementController : ControllerBase
     {
 

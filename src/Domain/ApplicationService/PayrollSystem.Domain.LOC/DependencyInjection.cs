@@ -25,6 +25,7 @@ using PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement;
 using PayrollSystem.Infrastructure.Dapper.PayStatement;
 using PayrollSystem.Domain.ApplicationService.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Service.Personnel.PayStatement;
+using PayrollSystem.Domain.Contracts.InfraService;
 
 namespace PayrollSystem.Domain.LOC;
 
@@ -38,6 +39,7 @@ public static class DependencyInjection
         services.AddIdentity<ApplicationUser, IdentityRole>()
      .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
+
 
         services.AddTransient<IDbConnection>(provider => new SqlConnection(
          OutConnectionString));
@@ -54,5 +56,8 @@ public static class DependencyInjection
 
         services.AddScoped<IPayStatementService, PayStatementService>();
         services.AddScoped<IPayStatementRepository, PayStatementRepository>();
+
+
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
     }
 }

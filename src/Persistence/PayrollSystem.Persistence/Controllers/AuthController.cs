@@ -43,7 +43,7 @@ namespace PayrollSystem.Persistence.Controllers
                     new Claim(ClaimTypes.NameIdentifier, user.Id)
                 };
                 var expireDate = DateTime.UtcNow.AddMinutes(30);
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_hereyour_secret_key_here"));
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var token = new JwtSecurityToken(
@@ -53,7 +53,21 @@ namespace PayrollSystem.Persistence.Controllers
                     expires: expireDate,
                     signingCredentials: creds);
 
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token),date = expireDate });
+                var authority = new List<string>();
+                authority.Add("admin");
+                var res = new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    date = expireDate,
+                    user = new
+                    {
+                        userName = user.UserName,
+                        email = "",
+                        authority = authority,
+                        avatar = ""
+                    }
+                };
+                return Ok(res);
             }
 
             return Unauthorized();
@@ -80,7 +94,7 @@ namespace PayrollSystem.Persistence.Controllers
         }
 
         [HttpPost("signout")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> SignOut()
         {
             return Ok();

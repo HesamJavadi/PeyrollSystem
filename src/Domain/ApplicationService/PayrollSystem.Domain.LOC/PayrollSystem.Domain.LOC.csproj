@@ -16,7 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infrastructure\Data\PayrollSystem.Infrastructure.StoreProduceDapper\PayrollSystem.Infrastructure.Dapper.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\PayrollSystem.Infrastructure.SQL\PayrollSystem.Infrastructure.SQL.csproj" />
-    <ProjectReference Include="..\..\Core\PayrollSystem.Domain.Core\PayrollSystem.Domain.Core.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Service\PayrollSystem.Infrastructure.Service\PayrollSystem.Infrastructure.Service.csproj" />
+    <ProjectReference Include="..\..\Contracts\PayrollSystem.Domain.Contracts\PayrollSystem.Domain.Contracts.csproj" />
     <ProjectReference Include="..\PayrollSystem.Domain.ApplicationService\PayrollSystem.Domain.ApplicationService.csproj" />
   </ItemGroup>
 

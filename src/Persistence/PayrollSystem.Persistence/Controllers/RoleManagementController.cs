@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PayrollSystem.Domain.Contracts.Dtos.Auth;
@@ -8,6 +9,7 @@ namespace PayrollSystem.Persistence.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class RoleManagementController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> _roleManager;
