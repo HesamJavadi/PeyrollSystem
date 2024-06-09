@@ -21,9 +21,14 @@ namespace PayrollSystem.Persistence.Controllers
         }
 
         [HttpGet]
-        public List<PayStubDto> Get([FromQuery] GetPayStubRequest PayStub)
+        public async Task<IActionResult> Get([FromQuery] GetPayStubRequest PayStub)
         {
-            return _service.GetPayStub(PayStub);
+            var data = await _service.GetPayStub(PayStub);
+            if (data.Count > 1)
+            {
+                return Ok(data);
+            }
+            return Ok();
         }
 
     }

@@ -10,7 +10,7 @@ namespace PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement
 {
     public interface IPayStatementRepository
     {
-        List<PayStatementModel> GetPayStatementNumber(int CommitStatementStatus, int StatementStatus, int PersonelStatus, int PersonelCode);
-        List<PayStatementDetailsModel> GetPayStatementDetail(int StatementNumber, int type, int PersonelCode);
+        Task<List<PayStatementModel>> GetPayStatementNumber(int CommitStatementStatus, int StatementStatus, int PersonelStatus);
+        Task<List<PayStatementDetailsModel>> GetPayStatementDetail(int StatementNumber, int type);
     }
 }

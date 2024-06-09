@@ -13,7 +13,7 @@ namespace PayrollSystem.Domain.Contracts.Service.Personnel.PayStatement
 {
     public interface IPayStatementService
     {
-        List<PayStatementDto> GetPayStatementNumber(GetPayStatementRequest getPayStatement);
-        List<PayStatementDetailDto> GetPayStatementDetail(GetPayStatementRequest getPay);
+        Task<List<PayStatementDto>> GetPayStatementNumber(GetPayStatementRequest getPayStatement);
+        Task<List<PayStatementDetailDto>> GetPayStatementDetail(GetPayStatementRequest getPay);
     }
 }

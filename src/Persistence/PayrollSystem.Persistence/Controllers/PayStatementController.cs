@@ -24,15 +24,15 @@ namespace PayrollSystem.Persistence.Controllers
         }
 
         [HttpGet]
-        public List<PayStatementDto> GetNumber([FromQuery] GetPayStatementRequest PayStatement)
+        public async Task<List<PayStatementDto>> GetNumber([FromQuery] GetPayStatementRequest PayStatement)
         {
-            return _service.GetPayStatementNumber(PayStatement);
+            return await _service.GetPayStatementNumber(PayStatement);
         }
 
         [HttpGet]
-        public List<PayStatementDetailDto> Get([FromQuery] GetPayStatementRequest PayStatement)
+        public async Task<List<PayStatementDetailDto>> Get([FromQuery] GetPayStatementRequest PayStatement)
         {
-            return _service.GetPayStatementDetail(PayStatement);
+            return await _service.GetPayStatementDetail(PayStatement);
         }
 
     }

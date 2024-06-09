@@ -27,15 +27,15 @@ namespace PayrollSystem.Domain.ApplicationService.Personnel.PayStatement
             _mapper = mapper;
         }
 
-        public List<PayStatementDto> GetPayStatementNumber(GetPayStatementRequest getPay)
+        public async Task<List<PayStatementDto>> GetPayStatementNumber(GetPayStatementRequest getPay)
         {
-            var PayEntity = payStubRepository.GetPayStatementNumber(0,0,0,13);
+            var PayEntity = await payStubRepository.GetPayStatementNumber(0,0,0);
             return _mapper.Map<List<PayStatementDto>>(PayEntity);
         }
 
-        public List<PayStatementDetailDto> GetPayStatementDetail(GetPayStatementRequest getPay)
+        public async Task<List<PayStatementDetailDto>> GetPayStatementDetail(GetPayStatementRequest getPay)
         {
-            var PayEntity = payStubRepository.GetPayStatementDetail(getPay.StatementNumber, getPay.Type, 13);
+            var PayEntity = await payStubRepository.GetPayStatementDetail(getPay.StatementNumber, getPay.Type);
             return _mapper.Map<List<PayStatementDetailDto>>(PayEntity);
         }
     }

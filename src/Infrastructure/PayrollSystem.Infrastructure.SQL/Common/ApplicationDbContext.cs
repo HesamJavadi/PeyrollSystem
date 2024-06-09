@@ -69,6 +69,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<WebServiceManagementModel>(b =>
         b.ComplexProperty(x => x.URL)
         );
+
+        builder.Entity<ApplicationUser>()
+          .Property(b => b.isActive)
+          .HasDefaultValue(true);
+
         base.OnModelCreating(builder);
         //builder.AddAuditableShadowProperties();
     }

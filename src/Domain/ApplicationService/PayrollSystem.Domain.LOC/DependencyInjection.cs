@@ -26,6 +26,8 @@ using PayrollSystem.Infrastructure.Dapper.PayStatement;
 using PayrollSystem.Domain.ApplicationService.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Service.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.InfraService;
+using PayrollSystem.Infrastructure.Service.SendSms;
+using PayrollSystem.Infrastructure.Service.AuthService;
 
 namespace PayrollSystem.Domain.LOC;
 
@@ -59,5 +61,7 @@ public static class DependencyInjection
 
 
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<ISendSms, SendSms>();
+        services.AddScoped<IAuthService, AuthService>();
     }
 }

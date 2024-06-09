@@ -11,6 +11,6 @@ namespace PayrollSystem.Domain.Contracts.Service.Personnel.PayStub
 {
     public interface IPayStubService
     {
-        List<PayStubDto> GetPayStub(GetPayStubRequest getPay);
+        Task<List<PayStubDto>> GetPayStub(GetPayStubRequest getPay);
     }
 }

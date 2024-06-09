@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Data.Personnel.PayStub;
+using PayrollSystem.Domain.Contracts.InfraService;
 using PayrollSystem.Domain.Core.Entities.personnel.PayStatement;
 using PayrollSystem.Domain.Core.Entities.personnel.PayStub;
 using System;
@@ -15,19 +16,21 @@ namespace PayrollSystem.Infrastructure.Dapper.PayStub
     public class PayStubRepository : IPayStubRepository
     {
         private readonly IDbConnection _dbConnection;
-
-        public PayStubRepository(IDbConnection dbConnection)
+        private readonly IAuthService _authService;
+        public PayStubRepository(IDbConnection dbConnection, IAuthService authService)
         {
             _dbConnection = dbConnection;
+            _authService = authService;
         }
 
-        public List<PayStubModel>? GetPayStub(int year, int month)
+        public async Task<List<PayStubModel>?> GetPayStub(int year, int month)
         {
+            var user = await _authService.GetCurrentUSerAsync();
             var obj = new
             {
                 salaryyear = year,
                 salarymonth = month, //11
-                personelcode = 13
+                personelcode = user.pepCode
             };
             return _dbConnection.Query<PayStubModel>("SVC_GetMonthlySalaryFicheInfo", obj, commandType: CommandType.StoredProcedure).ToList();
         }
