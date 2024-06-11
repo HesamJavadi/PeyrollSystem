@@ -45,45 +45,48 @@ namespace PayrollSystem.Persistence.Controllers
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var claims = new[]
+                if (user.isActive)
                 {
+                    var claims = new[]
+                    {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.NameIdentifier, user.Id)
                 };
-                var expireDate = DateTime.UtcNow.AddMinutes(30);
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                // -----------------------------------------------------------------------------
-                PersianCalendar persianCalendar = new PersianCalendar();
-                var date = DateTime.Now;
-                int year = persianCalendar.GetYear(date);
-                int month = persianCalendar.GetMonth(date);
-                int day = persianCalendar.GetDayOfMonth(date);
-                user.LastActive = DateTime.Parse($"{year}/{month:D2}/{day:D2}");
-                var users = await _userManager.UpdateAsync(user);
-                //------------------------------------------------------------------------------
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: expireDate,
-                    signingCredentials: creds);
+                    var expireDate = DateTime.UtcNow.AddMinutes(30);
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    // -----------------------------------------------------------------------------
+                    PersianCalendar persianCalendar = new PersianCalendar();
+                    var date = DateTime.Now;
+                    int year = persianCalendar.GetYear(date);
+                    int month = persianCalendar.GetMonth(date);
+                    int day = persianCalendar.GetDayOfMonth(date);
+                    user.LastActive = DateTime.Parse($"{year}/{month:D2}/{day:D2}");
+                    var users = await _userManager.UpdateAsync(user);
+                    //------------------------------------------------------------------------------
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
+                        claims: claims,
+                        expires: expireDate,
+                        signingCredentials: creds);
 
-                var authority = new List<string>();
-                authority.Add("admin");
-                var res = new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    date = expireDate,
-                    user = new
+                    var authority = new List<string>();
+                    authority.Add("admin");
+                    var res = new
                     {
-                        userName = user.UserName,
-                        email = "",
-                        authority = authority,
-                        avatar = ""
-                    }
-                };
-                return Ok(res);
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        date = expireDate,
+                        user = new
+                        {
+                            userName = user.UserName,
+                            email = "",
+                            authority = authority,
+                            avatar = ""
+                        }
+                    };
+                    return Ok(res);
+                }
             }
 
             return Unauthorized();

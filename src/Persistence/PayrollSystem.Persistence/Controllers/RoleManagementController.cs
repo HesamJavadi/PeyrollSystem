@@ -42,20 +42,20 @@ namespace PayrollSystem.Persistence.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole([FromBody] string roleName)
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request)
         {
-            if (string.IsNullOrEmpty(roleName))
+            if (string.IsNullOrEmpty(request.RoleName))
             {
                 return BadRequest("Role name cannot be empty");
             }
 
-            var roleExists = await _roleManager.RoleExistsAsync(roleName);
+            var roleExists = await _roleManager.RoleExistsAsync(request.RoleName);
             if (roleExists)
             {
                 return BadRequest("Role already exists");
             }
 
-            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            var result = await _roleManager.CreateAsync(new IdentityRole(request.RoleName));
             if (!result.Succeeded)
             {
                 return BadRequest(result.Errors);
