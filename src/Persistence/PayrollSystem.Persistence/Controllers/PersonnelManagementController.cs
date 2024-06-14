@@ -6,8 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using PayrollSystem.Domain.Contracts.Dtos.Auth;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStub;
 using PayrollSystem.Domain.Contracts.Dtos.User;
+using PayrollSystem.Domain.Contracts.InfraService;
 using PayrollSystem.Domain.Contracts.Request.Common;
 using PayrollSystem.Domain.Contracts.Request.PayStub;
+using PayrollSystem.Domain.Contracts.Request.Users;
+using PayrollSystem.Domain.Contracts.Utilities;
+using PayrollSystem.Infrastructure.Service.AuthService;
 using System.Data.Entity;
 
 namespace PayrollSystem.Persistence.Controllers
@@ -18,10 +22,13 @@ namespace PayrollSystem.Persistence.Controllers
     public class PersonnelManagementController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAuthService _authService;
 
-        public PersonnelManagementController(UserManager<ApplicationUser> userManager)
+
+        public PersonnelManagementController(UserManager<ApplicationUser> userManager, IAuthService authService)
         {
             _userManager = userManager;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -29,24 +36,41 @@ namespace PayrollSystem.Persistence.Controllers
         {
             try
             {
-                var users = _userManager.Users.OrderBy(x => x.UserName).Skip((pageInfo.pageIndex - 1) * pageInfo.pageSize).Take(pageInfo.pageSize)
-                    .Where(x => x.UserName.Contains(pageInfo.query) || pageInfo.query == null);
-                var userDtos = users.Select(user => new UserDto
+                var query = _userManager.Users
+                    .Where(x => x.UserName.Contains(pageInfo.query) || pageInfo.query == null)
+                    .OrderBy(x => x.UserName);
+
+                var totalUsers = query.Count();
+
+                var users = query
+                    .Skip((pageInfo.pageIndex - 1) * pageInfo.pageSize)
+                    .Take(pageInfo.pageSize)
+                    .Select(user => new UserDto
+                    {
+                        id = Guid.NewGuid(),
+                        avatar = user.Avatar,
+                        username = user.UserName,
+                        nationalCode = user.nationalCode,
+                        isActive = user.isActive,
+                        userCode = user.pepCode,
+                        phone = user.PhoneNumber,
+                        lastActive = user.LastActive.ToString("yyyy/MM/dd")
+                    }).ToList();
+
+                var response = new PaginatedResponse<UserDto>
                 {
-                    id = Guid.NewGuid(),
-                    username = user.UserName,
-                    nationalCode = user.nationalCode,
-                    isActive = user.isActive,
-                    userCode = user.pepCode,
-                    phone = user.PhoneNumber,
-                    lastActive = user.LastActive.ToString("yyyy/MM/dd")
-                }).ToList();
-                return Ok(userDtos);
-            }catch(Exception e)
+                    TotalCount = totalUsers,
+                    Items = users
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ActiveUser([FromBody] string username)
@@ -71,35 +95,39 @@ namespace PayrollSystem.Persistence.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUsers([FromQuery] string username,[FromBody] UserDtoRequest value)
+        public async Task<IActionResult> UpdateUsers([FromQuery] string username,[FromForm] UserUpdateRequest value)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user != null)
+            var response = await _authService.UpdateUser(username, value);
+            if (response.success)
             {
-                try
-                {
-                    user.UserName = value.username;
-                    user.pepCode = value.userCode;
-                    user.nationalCode = value.nationalCode;
-                    user.PhoneNumber = value.phone;
-                    if (value.isActive.HasValue)
-                    {
-                        user.isActive = value.isActive.Value;
-                    }
-                    var users = await _userManager.UpdateAsync(user);
-                    if (users.Succeeded)
-                    {
-                        return Ok(value);
-                    }
-
-                    return BadRequest(users.Errors);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                return Ok(response.data);
             }
-            return BadRequest("کاربر یافت نشد");
+            return BadRequest(response.errors);
+
+        }
+
+
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteUser(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("User ID cannot be null or empty.");
+            }
+
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound($"User with ID {username} not found.");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return StatusCode(500, "An error occurred while deleting the user.");
+            }
+
+            return Ok($"User with ID {username} has been deleted.");
         }
     }
 }

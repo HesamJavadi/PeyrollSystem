@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,8 +21,8 @@ namespace PayrollSystem.Domain.Contracts.Common
         List<TEntity> GetAll();
         void Insert(TEntity entity);
         Task InsertAsync(TEntity entity);
-        void Update(TEntity entity);
-        Task UpdateAsync(TEntity entity);
+        void Update(TId id,TEntity entity);
+        Task UpdateAsync(TId id,TEntity entity);
         TEntity Get(TId id);
         Task<TEntity> GetAsync(TId id);
         void Delete(TEntity entity);

@@ -199,6 +199,12 @@ namespace PayrollSystem.Infrastructure.SQL.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PasswordResetCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PasswordResetCodeExpiration")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -237,6 +243,35 @@ namespace PayrollSystem.Infrastructure.SQL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", "ps");
+                });
+
+            modelBuilder.Entity("PayrollSystem.Domain.Core.Entities.Management.Setting.SettingModel", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("ApplicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DashboadDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Logo", "PayrollSystem.Domain.Core.Entities.Management.Setting.SettingModel.Logo#LogoPath", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+                        });
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Setting", "ps");
                 });
 
             modelBuilder.Entity("PayrollSystem.Domain.Core.Entities.Management.WebServiceManagement.WebServiceManagementModel", b =>

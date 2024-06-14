@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStatement
+namespace PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStatementDetail
 {
     public class PayStatementDetailDto
     {

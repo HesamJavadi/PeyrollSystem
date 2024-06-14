@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace PayrollSystem.Domain.ApplicationService.Common
 {
-    public class AppService<TEntity, TDto, TId> : IAppService<TEntity, TDto>
+    public class AppService<TEntity, TDto, TRequest, TId> : IAppService<TEntity, TDto, TRequest, TId>
         where TEntity : IAggregateRoot<TId>
         where TDto : class
+        where TRequest : class
           where TId : struct,
           IComparable,
           IComparable<TId>,
@@ -22,66 +23,71 @@ namespace PayrollSystem.Domain.ApplicationService.Common
           IFormattable
     {
 
-        private readonly IBaseRepository<TEntity, TId> baseRepository;
+        private readonly IBaseRepository<TEntity, TId> _baseRepository;
         private readonly IMapper _mapper;
 
         public AppService(IBaseRepository<TEntity, TId> baseRepository, IMapper mapper)
         {
-            this.baseRepository = baseRepository;
+            _baseRepository = baseRepository;
             _mapper = mapper;
         }
 
-        public TDto Create(TDto dto)
+        public virtual TDto Create(TRequest dto)
         {
             var entity = _mapper.Map<TEntity>(dto);
-            baseRepository.Insert(entity);
-            return dto;
+            _baseRepository.Insert(entity);
+            return _mapper.Map<TDto>(entity);
         }
 
-        public Task<TDto> CreateAsync(TDto dto)
+        public virtual Task<TDto> CreateAsync(TRequest dto)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(Guid id)
+        public virtual bool Delete(TId id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public virtual Task<bool> DeleteAsync(TId id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<TDto> GetAll()
+        public virtual IEnumerable<TDto> GetAll()
         {
-            var entity = baseRepository.GetAll();
+            var entity = _baseRepository.GetAll();
             return _mapper.Map<IEnumerable<TDto>>(entity);
         }
 
-        public Task<IEnumerable<TDto>> GetAllAsync()
+        public virtual Task<IEnumerable<TDto>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public TDto GetById(Guid id)
+        public virtual TDto GetById(TId id)
+        {
+            var entity = _baseRepository.Get(id);
+            return _mapper.Map<TDto>(entity);
+        }
+
+        public virtual Task<TDto> GetByIdAsync(TId id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TDto> GetByIdAsync(Guid id)
+        public virtual TDto Update(TId id, TRequest request)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<TEntity>(request);
+            _baseRepository.Update(id, entity);
+            return _mapper.Map<TDto>(request);
         }
 
-        public TDto Update(Guid id, TDto dto)
+        public virtual async Task<TDto> UpdateAsync(TId id, TRequest dto)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<TDto> UpdateAsync(Guid id, TDto dto)
-        {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<TEntity>(dto);
+            await _baseRepository.UpdateAsync(id,entity);
+            return _mapper.Map<TDto>(dto);
         }
     }
 }

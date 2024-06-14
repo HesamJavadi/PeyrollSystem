@@ -8,7 +8,7 @@ namespace PayrollSystem.Domain.Contracts.Request.UserRoleAssignment
 {
     public class UserRoleAssignmentRequest
     {
-        public string UserId { get; set; }
+        public string Username { get; set; }
         public string RoleName { get; set; }
     }
 }

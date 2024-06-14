@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PayrollSystem.Domain.Contracts.Request.UserRoleAssignment
+namespace PayrollSystem.Domain.Contracts.Request.Auth
 {
     public class CreateRoleRequest
     {

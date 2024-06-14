@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PayrollSystem.Domain.Contracts.Dtos.Bases;
 using PayrollSystem.Domain.Contracts.Dtos.Management.WebServiceManagement;
+using PayrollSystem.Domain.Contracts.Request.WebServiceManagement;
 using PayrollSystem.Domain.Contracts.Service.Management.WebServiceManagement;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -30,7 +31,7 @@ namespace PayrollSystem.Persistence.Controllers
 
         // POST api/<WebServiceManagementController>
         [HttpPost]
-        public void Post([FromBody] WebServiceManagementDto value)
+        public void Post([FromBody] WebServiceManagementRequest value)
         {
             _service.Create(value);
         }

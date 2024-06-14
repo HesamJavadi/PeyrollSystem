@@ -2,24 +2,28 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PayrollSystem.Domain.ApplicationService.Management.Roles;
 using PayrollSystem.Domain.Contracts.Dtos.Auth;
+using PayrollSystem.Domain.Contracts.Request.Auth;
 using PayrollSystem.Domain.Contracts.Request.UserRoleAssignment;
+using PayrollSystem.Domain.Contracts.Service.Roles;
 
 namespace PayrollSystem.Persistence.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
     public class RoleManagementController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRoleService _roleService;
 
 
-        public RoleManagementController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public RoleManagementController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IRoleService roleService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _roleService = roleService;
         }
 
         [HttpGet]
@@ -108,7 +112,7 @@ namespace PayrollSystem.Persistence.Controllers
         [HttpPost("AssignRole")]
         public async Task<IActionResult> AssignRoleToUser([FromBody] UserRoleAssignmentRequest model)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
                 return NotFound("User not found");
@@ -128,6 +132,42 @@ namespace PayrollSystem.Persistence.Controllers
 
             return BadRequest(result.Errors);
         }
+
+        [HttpPost("AddClaim")]
+        public async Task<IActionResult> AddClaimToRole([FromBody] UserRoleAssignmentRequest model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var roleExists = await _roleManager.RoleExistsAsync(model.RoleName);
+            if (!roleExists)
+            {
+                return NotFound("Role not found");
+            }
+
+            await _roleService.AddClaimToRole(model.RoleName,"permission","create");
+
+            return Ok();
+        }
+
+        [HttpGet("GetClaims")]
+        public async Task<IActionResult> GetRoleClaims([FromQuery] UserRoleAssignmentRequest model)
+        {
+
+            var roleExists = await _roleManager.RoleExistsAsync(model.RoleName);
+            if (!roleExists)
+            {
+                return NotFound("Role not found");
+            }
+
+            var Result =  await _roleService.GetRoleClaims(model.RoleName);
+
+            return Ok(Result);
+        }
+
     }
 }
 

@@ -15,5 +15,7 @@ namespace PayrollSystem.Domain.Contracts.Dtos.Auth
         public bool isActive { get; set; }
         public DateTime LastActive { get; set; }
         public string? Avatar { get; set; }
+        public string? PasswordResetCode { get; set; }
+        public DateTime? PasswordResetCodeExpiration { get; set; }
     }
 }

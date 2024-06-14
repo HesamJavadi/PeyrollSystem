@@ -15,6 +15,7 @@ using PayrollSystem.Domain.Core.Entities.Management.WebServiceManagement;
 using PayrollSystem.Domain.Core.ValueObjects.Management.WebServiceManagement;
 using PayrollSystem.Domain.Contracts.Dtos.Auth;
 using Microsoft.AspNetCore.Identity;
+using PayrollSystem.Domain.Core.Entities.Management.Setting;
 
 namespace PayrollSystem.Infrastructure.SQL.Common;
 
@@ -27,6 +28,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     {
     }
     public DbSet<WebServiceManagementModel> WebServiceManagement { get; set; }
+    public DbSet<SettingModel> Setting { get; set; }
     public void BeginTransaction()
     {
         _transaction = Database.BeginTransaction();
@@ -68,6 +70,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.HasDefaultSchema("ps");
         builder.Entity<WebServiceManagementModel>(b =>
         b.ComplexProperty(x => x.URL)
+        );
+
+        builder.Entity<SettingModel>(b =>
+        b.ComplexProperty(x => x.Logo)
         );
 
         builder.Entity<ApplicationUser>()

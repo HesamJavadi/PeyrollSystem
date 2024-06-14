@@ -13,6 +13,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using PayrollSystem.Domain.Contracts.InfraService;
 using Microsoft.AspNetCore.Identity.Data;
 using Azure.Core;
+using System.Data.Entity;
+using PayrollSystem.Domain.Contracts.Request.Auth;
 
 namespace PayrollSystem.Persistence.Controllers
 {
@@ -52,7 +54,7 @@ namespace PayrollSystem.Persistence.Controllers
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.NameIdentifier, user.Id)
                 };
-                    var expireDate = DateTime.UtcNow.AddMinutes(30);
+                    var expireDate = DateTime.UtcNow.AddDays(30);
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                     // -----------------------------------------------------------------------------
@@ -89,7 +91,7 @@ namespace PayrollSystem.Persistence.Controllers
                 }
             }
 
-            return Unauthorized();
+            return Unauthorized(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("نام کاربری و یا رمز عبور اشتباه است"));
         }
 
         [HttpPost("signup")]
@@ -128,31 +130,61 @@ namespace PayrollSystem.Persistence.Controllers
             await _userManager.UpdateAsync(user);
             return Ok();
         }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] PayrollSystem.Domain.Contracts.Request.Auth.ForgotPasswordRequest request)
         {
-            var user = await _userManager.FindByNameAsync(request.username);
+            var user = _userManager.Users.FirstOrDefault(x => x.nationalCode == request.NationalCode);
             if (user != null)
             {
-                Random Random = new Random();
-                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-                var newPassword = new string(Enumerable.Repeat(chars, 16)
-                  .Select(s => s[Random.Next(s.Length)]).ToArray());
-                string smsText = $"پسورد جدید شما : {newPassword}";
-                if (user.PhoneNumber != null)
+                Random random = new Random();
+                var verificationCode = random.Next(100000, 999999).ToString();
+                string smsText = $"کد :  {verificationCode}";
+
+                user.PasswordResetCode = verificationCode;
+                user.PasswordResetCodeExpiration = DateTime.UtcNow.AddMinutes(15);
+                await _userManager.UpdateAsync(user);
+
+                _sendSms.send(smsText, new string[] { user.PhoneNumber });
+                return Ok(new { message = "Verification code sent to your phone number." , code = smsText });
+            }
+            return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کاربر پیدا نشد"));
+        }
+
+        [HttpPost("verify-code")]
+        public async Task<IActionResult> VerifyCode([FromBody] VerifyCodeRequest request)
+        {
+            var user = _userManager.Users.FirstOrDefault(x => x.nationalCode == request.NationalCode);
+            if (user != null)
+            {
+                if (user.PasswordResetCode == request.verifyCode && user.PasswordResetCodeExpiration > DateTime.UtcNow)
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-                    if (result.Succeeded)
-                    {
-                        _sendSms.send(smsText, new string[] { user.PhoneNumber });
-                        return Ok(request);
-                    }
+                    return Ok(new { token , request.NationalCode });
                 }
-                return BadRequest("شماره موبایل ست نشده است");
-
+                return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کد وارد شده اشتباه است"));
             }
-            return BadRequest("کاربر پیدا نشد");
+            return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کاربر پیدا نشد"));
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] PayrollSystem.Domain.Contracts.Request.Auth.ResetPasswordRequest request)
+        {
+            var user = _userManager.Users.FirstOrDefault(x => x.nationalCode == request.NationalCode);
+            if (user != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+                if (result.Succeeded)
+                {
+                    user.PasswordResetCode = null;
+                    user.PasswordResetCodeExpiration = null;
+                    await _userManager.UpdateAsync(user);
+
+                    return Ok(PayrollSystem.Domain.Contracts.Utilities.Response.Success("با موفقیت ویرایش شد"));
+                }
+                return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("ویرایش رمز عبور با شکست مواجه شد"));
+            }
+            return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کاربر پیدا نشد"));
         }
     }
 }

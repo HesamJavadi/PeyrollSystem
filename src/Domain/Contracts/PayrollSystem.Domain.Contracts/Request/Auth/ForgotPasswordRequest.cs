@@ -8,6 +8,6 @@ namespace PayrollSystem.Domain.Contracts.Request.Auth
 {
     public class ForgotPasswordRequest
     {
-        public string username { get; set; }
+        public required string NationalCode { get; set; }
     }
 }

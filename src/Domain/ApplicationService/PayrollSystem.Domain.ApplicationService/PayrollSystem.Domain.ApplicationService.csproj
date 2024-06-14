@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Service\PayrollSystem.Infrastructure.Service\PayrollSystem.Infrastructure.Service.csproj" />
     <ProjectReference Include="..\..\Contracts\PayrollSystem.Domain.Contracts\PayrollSystem.Domain.Contracts.csproj" />
   </ItemGroup>
 

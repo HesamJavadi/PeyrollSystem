@@ -10,10 +10,6 @@ public class WebServiceURL : BaseValueObject<WebServiceURL>
     {
         Value = value;
     }
-    private WebServiceURL()
-    {
-
-    }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

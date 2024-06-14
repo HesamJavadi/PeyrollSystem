@@ -3,10 +3,9 @@ using PayrollSystem.Domain.Contracts.Common;
 using PayrollSystem.Domain.Core.Entities.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PayrollSystem.Infrastructure.SQL.Common
@@ -24,58 +23,85 @@ namespace PayrollSystem.Infrastructure.SQL.Common
 
         protected BaseRepository(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public void Delete(TEntity entity)
+        public virtual void Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            _dbContext.Set<TEntity>().Remove(entity);
+            _dbContext.SaveChanges();
         }
 
-        public bool Exists(Expression<Func<TEntity, bool>> expression)
+        public virtual bool Exists(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            return _dbContext.Set<TEntity>().Any(expression);
         }
 
-        public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
+        public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<TEntity>().AnyAsync(expression);
         }
 
-        public TEntity Get(TId id)
+        public virtual TEntity Get(TId id)
         {
-            throw new NotImplementedException();
+            return _dbContext.Set<TEntity>().Find(id);
         }
 
-        public List<TEntity> GetAll()
+        public virtual List<TEntity> GetAll()
         {
-           return _dbContext.Set<TEntity>().ToList();
+            return _dbContext.Set<TEntity>().ToList();
         }
 
-        public Task<TEntity> GetAsync(TId id)
+        public virtual async Task<TEntity> GetAsync(TId id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public void Insert(TEntity entity)
+        public virtual void Insert(TEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             _dbContext.Set<TEntity>().Add(entity);
             _dbContext.SaveChanges();
         }
 
-        public Task InsertAsync(TEntity entity)
+        public virtual async Task InsertAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            await _dbContext.Set<TEntity>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Update(TEntity entity)
+        public virtual void Update(TId id, TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            entity.ID = id;
+            _dbContext.Set<TEntity>().Update(entity);
+            _dbContext.SaveChanges();
         }
 
-        public Task UpdateAsync(TEntity entity)
+        public virtual async Task UpdateAsync(TId id, TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingEntity = await _dbContext.Set<TEntity>().FindAsync(id);
+            if (existingEntity == null)
+                throw new InvalidOperationException($"Entity with id {id} not found.");
+
+            entity.ID = id;
+            // Update the existing entity with the new values
+            _dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -26,8 +26,16 @@ using PayrollSystem.Infrastructure.Dapper.PayStatement;
 using PayrollSystem.Domain.ApplicationService.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Service.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.InfraService;
-using PayrollSystem.Infrastructure.Service.SendSms;
 using PayrollSystem.Infrastructure.Service.AuthService;
+using PayrollSystem.Infrastructure.SQL.Management.Setting;
+using PayrollSystem.Infrastructure.Service.SmsService;
+using PayrollSystem.Domain.Contracts.Data.Management.Setting;
+using PayrollSystem.Domain.Core.Entities.Management.Setting;
+using PayrollSystem.Domain.Contracts.Service.Management.Setting;
+using PayrollSystem.Domain.ApplicationService.Management.Setting;
+using PayrollSystem.Infrastructure.Service.UploadFiles;
+using PayrollSystem.Domain.ApplicationService.Management.Roles;
+using PayrollSystem.Domain.Contracts.Service.Roles;
 
 namespace PayrollSystem.Domain.LOC;
 
@@ -36,32 +44,38 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection services, string connectionString, string OutConnectionString)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseSqlServer(connectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(180)));
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
      .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
 
 
-        services.AddTransient<IDbConnection>(provider => new SqlConnection(
+        services.AddScoped<IDbConnection>(provider => new SqlConnection(
          OutConnectionString));
 
         services.AddSingleton<IMapper>(AutoMapperConfiguration.Configure());
 
 
+
+        #region AppService
         services.AddScoped<IWebServiceManagementService, WebServiceManagementService>();
-        services.AddScoped<IWebServiceManagementRepository, WebServiceManagementRepository>();
-
-
         services.AddScoped<IPayStubService, PayStubService>();
-        services.AddScoped<IPayStubRepository, PayStubRepository>();
-
         services.AddScoped<IPayStatementService, PayStatementService>();
+        services.AddScoped<ISettingService, SettingService>();
+        services.AddScoped<IRoleService, RoleService>();
+        #endregion
+        #region infra Repo 
         services.AddScoped<IPayStatementRepository, PayStatementRepository>();
-
-
+        services.AddScoped<IPayStubRepository, PayStubRepository>();
+        services.AddScoped<IWebServiceManagementRepository, WebServiceManagementRepository>();
+        services.AddScoped<ISettingRepository, SettingRepository>();
+        #endregion
+        #region infra service 
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ISendSms, SendSms>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUploadFileHandlerService, UploadFileHandlerService>();
+        #endregion
     }
 }

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PayrollSystem.Infrastructure.Service.SendSms
+namespace PayrollSystem.Infrastructure.Service.SmsService
 {
-    public class SendSms: ISendSms
+    public class SendSms : ISendSms
     {
         public void send(string text, string[] number)
         {

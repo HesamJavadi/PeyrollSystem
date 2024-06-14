@@ -6,17 +6,23 @@ using System.Threading.Tasks;
 
 namespace PayrollSystem.Domain.Contracts.Common
 {
-    public interface IAppService<TEntity, TDto>
+    public interface IAppService<TEntity, TDto, TRequest , TId> 
+                  where TId : struct,
+          IComparable,
+          IComparable<TId>,
+          IConvertible,
+          IEquatable<TId>,
+          IFormattable
     {
         IEnumerable<TDto> GetAll();
         Task<IEnumerable<TDto>> GetAllAsync();
-        TDto GetById(Guid id);
-        Task<TDto> GetByIdAsync(Guid id);
-        TDto Create(TDto dto);
-        Task<TDto> CreateAsync(TDto dto);
-        TDto Update(Guid id, TDto dto);
-        Task<TDto> UpdateAsync(Guid id, TDto dto);
-        bool Delete(Guid id);
-        Task<bool> DeleteAsync(Guid id);
+        TDto GetById(TId id);
+        Task<TDto> GetByIdAsync(TId id);
+        TDto Create(TRequest dto);
+        Task<TDto> CreateAsync(TRequest dto);
+        TDto Update(TId id, TRequest dto);
+        Task<TDto> UpdateAsync(TId id, TRequest dto);
+        bool Delete(TId id);
+        Task<bool> DeleteAsync(TId id);
     }
 }

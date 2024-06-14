@@ -2,6 +2,7 @@
 using PayrollSystem.Domain.Contracts.Data.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Data.Personnel.PayStub;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStatement;
+using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStatementDetail;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStub;
 using PayrollSystem.Domain.Contracts.Request.PayStatement;
 using PayrollSystem.Domain.Contracts.Request.PayStub;
