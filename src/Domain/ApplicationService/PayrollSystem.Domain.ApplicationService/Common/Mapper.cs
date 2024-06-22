@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using PayrollSystem.Domain.Contracts.Dtos.Bases;
+using PayrollSystem.Domain.Contracts.Dtos.Logger;
 using PayrollSystem.Domain.Contracts.Dtos.Management.Setting;
 using PayrollSystem.Domain.Contracts.Dtos.Management.WebServiceManagement;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStatement;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStatementDetail;
 using PayrollSystem.Domain.Contracts.Dtos.Personnel.PayStub;
 using PayrollSystem.Domain.Contracts.Request.Setting;
+using PayrollSystem.Domain.Contracts.Service.Logger;
 using PayrollSystem.Domain.Core.Entities.Common;
+using PayrollSystem.Domain.Core.Entities.Logger;
 using PayrollSystem.Domain.Core.Entities.Management.Setting;
 using PayrollSystem.Domain.Core.Entities.Management.WebServiceManagement;
 using PayrollSystem.Domain.Core.Entities.personnel.PayStatement;
@@ -30,7 +33,7 @@ namespace PayrollSystem.Domain.ApplicationService.Common
             CreateMap<PayStubModel, PayStubDto>().ReverseMap();
             CreateMap<PayStatementModel, PayStatementDto>().ReverseMap();
             CreateMap<PayStatementDetailsModel, PayStatementDetailDto>().ReverseMap();
-
+            CreateMap<SystemLogEntry, SerilogLoggerDto>().ReverseMap();
 
             // -----------------------------------------------
             CreateMap<SettingModel, SettingRequest>()

@@ -36,6 +36,15 @@ using PayrollSystem.Domain.ApplicationService.Management.Setting;
 using PayrollSystem.Infrastructure.Service.UploadFiles;
 using PayrollSystem.Domain.ApplicationService.Management.Roles;
 using PayrollSystem.Domain.Contracts.Service.Roles;
+using PayrollSystem.Infrastructure.SQL.SeedData;
+using PayrollSystem.Domain.Contracts.Service.User;
+using PayrollSystem.Domain.Contracts.Translator;
+using PayrollSystem.Infrastructure.Service.TranslationService;
+using PayrollSystem.Infrastructure.SQL.Logger;
+using PayrollSystem.Domain.Contracts.Data.Logger;
+using PayrollSystem.Domain.Contracts.Service.Logger;
+using PayrollSystem.Domain.ApplicationService.Logger;
+using PayrollSystem.Infrastructure.Dapper.User;
 
 namespace PayrollSystem.Domain.LOC;
 
@@ -44,9 +53,10 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection services, string connectionString, string OutConnectionString)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(180)));
+            options.UseSqlServer(connectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(180)
+            ));
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, ApplicationRole>().AddRoles<ApplicationRole>()
      .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
 
@@ -64,18 +74,31 @@ public static class DependencyInjection
         services.AddScoped<IPayStatementService, PayStatementService>();
         services.AddScoped<ISettingService, SettingService>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ISerilogLoggerService, SerilogLoggerService>();
         #endregion
         #region infra Repo 
         services.AddScoped<IPayStatementRepository, PayStatementRepository>();
         services.AddScoped<IPayStubRepository, PayStubRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IWebServiceManagementRepository, WebServiceManagementRepository>();
         services.AddScoped<ISettingRepository, SettingRepository>();
+        services.AddScoped<ISerilogLogger, SerilogLogger>();
         #endregion
         #region infra service 
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ISendSms, SendSms>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUploadFileHandlerService, UploadFileHandlerService>();
+        services.AddSingleton<ITranslator, TranslationService>();
         #endregion
     }
+
+    //public static async Task SeedData(this IServiceProvider serviceProvider)
+    //{
+        //var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        //var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+        //await SeedRolesAndClaims.Initialize(serviceProvider, userManager);
+        //await SeedRolesAndClaims.AdminSeeds(serviceProvider, userManager,roleManager);
+    //}
 }

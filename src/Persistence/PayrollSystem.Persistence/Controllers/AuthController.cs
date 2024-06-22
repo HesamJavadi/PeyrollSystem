@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity.Data;
 using Azure.Core;
 using System.Data.Entity;
 using PayrollSystem.Domain.Contracts.Request.Auth;
+using PayrollSystem.Domain.Contracts.Service.Roles;
+using PayrollSystem.Domain.Contracts.Utilities;
 
 namespace PayrollSystem.Persistence.Controllers
 {
@@ -24,6 +26,7 @@ namespace PayrollSystem.Persistence.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IRoleService _roleService;
         private readonly IConfiguration _configuration;
         private readonly ISendSms _sendSms;
 
@@ -31,17 +34,19 @@ namespace PayrollSystem.Persistence.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
-            ISendSms sendSms)
+            ISendSms sendSms,
+            IRoleService roleService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _sendSms = sendSms;
+            _roleService = roleService;
         }
 
         [HttpPost("signin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Singin([FromBody] LoginDto model)
+        public async Task<IActionResult> Signin([FromBody] LoginDto model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
 
@@ -49,23 +54,30 @@ namespace PayrollSystem.Persistence.Controllers
             {
                 if (user.isActive)
                 {
-                    var claims = new[]
+                    var userRoles = await _userManager.GetRolesAsync(user); // Get roles for the user
+
+                    var claims = new List<Claim>
+            {  
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
+
+                    var userClaim = await _userManager.GetClaimsAsync(user);
+                    claims.AddRange(userClaim);
+                    // Add roles as claims
+                    foreach (var role in userRoles)
                     {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
-                };
+                        claims.Add(new Claim(ClaimTypes.Role, role));
+
+                        // Retrieve claims for the role
+                        var roleClaims = await _roleService.GetClaimsForRoleAsync(role);
+                        claims.AddRange(roleClaims);
+                    }
+
                     var expireDate = DateTime.UtcNow.AddDays(30);
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                    // -----------------------------------------------------------------------------
-                    PersianCalendar persianCalendar = new PersianCalendar();
-                    var date = DateTime.Now;
-                    int year = persianCalendar.GetYear(date);
-                    int month = persianCalendar.GetMonth(date);
-                    int day = persianCalendar.GetDayOfMonth(date);
-                    user.LastActive = DateTime.Parse($"{year}/{month:D2}/{day:D2}");
-                    var users = await _userManager.UpdateAsync(user);
-                    //------------------------------------------------------------------------------
+
                     var token = new JwtSecurityToken(
                         issuer: _configuration["Jwt:Issuer"],
                         audience: _configuration["Jwt:Audience"],
@@ -75,6 +87,8 @@ namespace PayrollSystem.Persistence.Controllers
 
                     var authority = new List<string>();
                     authority.Add("admin");
+
+                    userRoles.Add("none");
                     var res = new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -83,7 +97,8 @@ namespace PayrollSystem.Persistence.Controllers
                         {
                             userName = user.UserName,
                             email = "",
-                            authority = authority,
+                            authority = userRoles, 
+                            //authority = authority, 
                             avatar = ""
                         }
                     };
@@ -91,8 +106,9 @@ namespace PayrollSystem.Persistence.Controllers
                 }
             }
 
-            return Unauthorized(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("نام کاربری و یا رمز عبور اشتباه است"));
+            return Unauthorized(ServiceResponse.Fail("نام کاربری و یا رمز عبور اشتباه است"));
         }
+
 
         [HttpPost("signup")]
         [AllowAnonymous]
@@ -148,7 +164,7 @@ namespace PayrollSystem.Persistence.Controllers
                 _sendSms.send(smsText, new string[] { user.PhoneNumber });
                 return Ok(new { message = "Verification code sent to your phone number." , code = smsText });
             }
-            return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کاربر پیدا نشد"));
+            return BadRequest(ServiceResponse.Fail("کاربر پیدا نشد"));
         }
 
         [HttpPost("verify-code")]
@@ -162,9 +178,9 @@ namespace PayrollSystem.Persistence.Controllers
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     return Ok(new { token , request.NationalCode });
                 }
-                return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کد وارد شده اشتباه است"));
+                return BadRequest(ServiceResponse.Fail("کد وارد شده اشتباه است"));
             }
-            return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کاربر پیدا نشد"));
+            return BadRequest(ServiceResponse.Fail("کاربر پیدا نشد"));
         }
 
         [HttpPost("reset-password")]
@@ -180,11 +196,11 @@ namespace PayrollSystem.Persistence.Controllers
                     user.PasswordResetCodeExpiration = null;
                     await _userManager.UpdateAsync(user);
 
-                    return Ok(PayrollSystem.Domain.Contracts.Utilities.Response.Success("با موفقیت ویرایش شد"));
+                    return Ok(ServiceResponse.Success("با موفقیت ویرایش شد"));
                 }
-                return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("ویرایش رمز عبور با شکست مواجه شد"));
+                return BadRequest(ServiceResponse.Fail("ویرایش رمز عبور با شکست مواجه شد"));
             }
-            return BadRequest(PayrollSystem.Domain.Contracts.Utilities.Response.Fail("کاربر پیدا نشد"));
+            return BadRequest(ServiceResponse.Fail("کاربر پیدا نشد"));
         }
     }
 }

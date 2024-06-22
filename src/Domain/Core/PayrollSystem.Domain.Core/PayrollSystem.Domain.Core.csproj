@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exeptions\" />
+    <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.4" />
+    <ProjectReference Include="..\..\..\Framework\PayrollSystem.Framework.SharedKernel\PayrollSystem.Framework.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

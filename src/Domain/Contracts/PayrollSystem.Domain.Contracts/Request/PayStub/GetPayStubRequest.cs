@@ -10,5 +10,6 @@ namespace PayrollSystem.Domain.Contracts.Request.PayStub
     {
         public int year { get; set; }
         public int month { get; set; }
+        public int typePayroll { get; set; }
     }
 }

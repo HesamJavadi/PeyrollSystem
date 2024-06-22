@@ -10,6 +10,7 @@ using PayrollSystem.Domain.Contracts.InfraService;
 using PayrollSystem.Domain.Contracts.Request.Common;
 using PayrollSystem.Domain.Contracts.Request.PayStub;
 using PayrollSystem.Domain.Contracts.Request.Users;
+using PayrollSystem.Domain.Contracts.Service.User;
 using PayrollSystem.Domain.Contracts.Utilities;
 using PayrollSystem.Infrastructure.Service.AuthService;
 using System.Data.Entity;
@@ -23,12 +24,14 @@ namespace PayrollSystem.Persistence.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
 
-        public PersonnelManagementController(UserManager<ApplicationUser> userManager, IAuthService authService)
+        public PersonnelManagementController(UserManager<ApplicationUser> userManager, IAuthService authService, IUserService userService)
         {
             _userManager = userManager;
             _authService = authService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -106,6 +109,17 @@ namespace PayrollSystem.Persistence.Controllers
 
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateUsersFromDB()
+        {
+            var response = await _userService.UpdateUserFromDB();
+            if (response.success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response.errors);
+
+        }
 
         [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser(string username)
@@ -129,5 +143,6 @@ namespace PayrollSystem.Persistence.Controllers
 
             return Ok($"User with ID {username} has been deleted.");
         }
+
     }
 }

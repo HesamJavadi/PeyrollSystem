@@ -20,6 +20,7 @@ namespace PayrollSystem.Infrastructure.Service.AuthService
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IUploadFileHandlerService _uploadFileHandler;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -63,6 +64,7 @@ namespace PayrollSystem.Infrastructure.Service.AuthService
                     var Updateuser = await _userManager.UpdateAsync(user);
                     if (Updateuser.Succeeded)
                     {
+ 
                         if (request.avatar != null)
                         {
                             await _uploadFileHandler.SaveFileAsync(request.avatar, $"avatar\\{username}");

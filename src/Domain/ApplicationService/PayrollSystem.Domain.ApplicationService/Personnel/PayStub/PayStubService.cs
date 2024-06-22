@@ -30,7 +30,7 @@ namespace PayrollSystem.Domain.ApplicationService.Personnel.PayStub
 
         public async Task<List<PayStubDto>> GetPayStub(GetPayStubRequest getPayStub)
         {
-            var PayEntity = await _payStubRepository.GetPayStub(getPayStub.year,getPayStub.month);
+            var PayEntity = await _payStubRepository.GetPayStub(getPayStub.year,getPayStub.month, getPayStub.typePayroll);
             return _mapper.Map<List<PayStubDto>>(PayEntity);
         }
     }

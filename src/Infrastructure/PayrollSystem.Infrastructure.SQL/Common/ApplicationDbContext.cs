@@ -16,19 +16,26 @@ using PayrollSystem.Domain.Core.ValueObjects.Management.WebServiceManagement;
 using PayrollSystem.Domain.Contracts.Dtos.Auth;
 using Microsoft.AspNetCore.Identity;
 using PayrollSystem.Domain.Core.Entities.Management.Setting;
+using Microsoft.IdentityModel.Abstractions;
+using PayrollSystem.Domain.Core.Entities.Logger;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+
 
 namespace PayrollSystem.Infrastructure.SQL.Common;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 {
 
     protected IDbContextTransaction _transaction;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
+
     }
     public DbSet<WebServiceManagementModel> WebServiceManagement { get; set; }
     public DbSet<SettingModel> Setting { get; set; }
+    public DbSet<SystemLogEntry> logEntry { get; set; }
     public void BeginTransaction()
     {
         _transaction = Database.BeginTransaction();
@@ -67,6 +74,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<SystemLogEntry>()
+      .ToTable("Log", "ps")
+      .HasKey(l => l.Id);
+
         builder.HasDefaultSchema("ps");
         builder.Entity<WebServiceManagementModel>(b =>
         b.ComplexProperty(x => x.URL)
@@ -127,6 +138,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             entityType = stack.Peek().Current.TargetEntityType;
         }
     }
+
 
 }
 

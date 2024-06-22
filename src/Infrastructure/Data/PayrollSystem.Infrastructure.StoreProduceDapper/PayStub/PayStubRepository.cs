@@ -23,7 +23,7 @@ namespace PayrollSystem.Infrastructure.Dapper.PayStub
             _authService = authService;
         }
 
-        public async Task<List<PayStubModel>?> GetPayStub(int year, int month)
+        public async Task<List<PayStubModel>?> GetPayStub(int year, int month, int type)
         {
             var user = await _authService.GetCurrentUSerAsync();
             var obj = new
@@ -32,7 +32,20 @@ namespace PayrollSystem.Infrastructure.Dapper.PayStub
                 salarymonth = month, //11
                 personelcode = user.pepCode
             };
-            return _dbConnection.Query<PayStubModel>("SVC_GetMonthlySalaryFicheInfo", obj, commandType: CommandType.StoredProcedure).ToList();
+            if (type == 1)
+            {
+                return _dbConnection.Query<PayStubModel>("SVC_GetMonthlySalaryFicheInfo", obj, commandType: CommandType.StoredProcedure).ToList();
+
+            }
+            else if(type == 2)
+            {
+                return _dbConnection.Query<PayStubModel>("SVC_GetSalarySecondPaymentFicheInfo2 ", obj, commandType: CommandType.StoredProcedure).ToList();
+
+            }
+
+            return _dbConnection.Query<PayStubModel>("SVC_GetDiffMonthlySalaryFicheInfo2", obj, commandType: CommandType.StoredProcedure).ToList();
+
+
         }
 
     }
